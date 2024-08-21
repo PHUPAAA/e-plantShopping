@@ -51,13 +51,23 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 50px;
-    /* background-color: pink; */
-    /* justify-content: space-between; */
+    background-color: pink; 
+    justify-content: space-between; 
     padding: 20px;
     width: 100%;
     align-items: center;
     justify-content: center;
 }
+
+.category-title {
+    position: relative;
+    font-size: 24px;
+    text-align: center;
+    margin: 40px 0;
+    /* Adjust the margin to control spacing */
+    font-weight: bold;
+}
+
 
 /* Product Card */
 .product-card {
@@ -215,9 +225,11 @@ body {
     background-color: #45a049;
   }
   
-  .product-button.added-to-cart {
+  .product-button.added {
     background-color: grey; /* Grey when product is added */
   }
+
+
   @media (max-width: 1200px) {
     .product-card {
       flex: 1 1 calc(33.33% - 20px); /* Adjust width for 3 cards per row with 20px gap on medium screens */
