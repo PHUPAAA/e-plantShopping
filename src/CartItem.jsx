@@ -121,7 +121,7 @@ const CartItem = ({ onContinueShopping }) => {
 };
 
 const handleCheckoutShopping = () => {
-  alert("Functionality to be added for future reference");
+  alert("Coming Soon!!!!");
 };
 
 export default CartItem;
