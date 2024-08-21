@@ -1,14 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
-import { useDispatch } from "react-redux";
+
+import { useSelector, useDispatch } from "react-redux";
 import { addItem } from "./CartSlice";
 
 function ProductList() {
   const [showCart, setShowCart] = useState(false);
+  const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+
   const [addedToCart, setAddedToCart] = useState({});
+
+  const cartItems = useSelector((state) => state.cart);
+
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.cartItems);
 
   const plantsArray = [
     {
@@ -252,6 +257,7 @@ function ProductList() {
       ],
     },
   ];
+
   const styleObj = {
     backgroundColor: "#4CAF50",
     color: "#fff!important",
@@ -272,26 +278,43 @@ function ProductList() {
     fontSize: "30px",
     textDecoration: "none",
   };
-  const handleAddToCart = (plant) => {
-    dispatch(addItem(plant));
-    setAddedToCart((prevState) => ({
-      ...prevState,
-      [plant.name]: true,
-    }));
-  };
-
   const handleCartClick = (e) => {
     e.preventDefault();
-    setShowCart(true);
+    setShowCart(true); // Set showCart to true when cart icon is clicked
+  };
+  const handlePlantsClick = (e) => {
+    e.preventDefault();
+    setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
+    setShowCart(false); // Hide the cart when navigating to About Us
   };
 
   const handleContinueShopping = (e) => {
     e.preventDefault();
     setShowCart(false);
   };
-  const initialState = {
-    cartItems: [],
+
+  const handleAddToCart = (plant) => {
+    const exist = cartItems.items.filter((item) => item.name == plant.name);
+
+    if (exist.length == 0) {
+      dispatch(addItem(plant));
+      setAddedToCart((prevState) => ({
+        ...prevState,
+        [plant.name]: true, // Set the product name as key and value as true to indicate it's added to cart
+      }));
+    }
   };
+
+  const totalSelectedProduct = () => {
+    let totalSelected = 0;
+    cartItems.items.forEach((item) => {
+      totalSelected += item.quantity;
+    });
+
+    return totalSelected;
+  };
+
+  const totalSelected = totalSelectedProduct();
 
   return (
     <div>
@@ -318,7 +341,6 @@ function ProductList() {
             </a>
           </div>
           <div>
-            {" "}
             <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
               <h1 className="cart">
                 <svg
@@ -341,36 +363,44 @@ function ProductList() {
                     id="mainIconPathAttribute"
                   ></path>
                 </svg>
+                <span className="cart_quantity_count">{totalSelected}</span>
               </h1>
             </a>
           </div>
         </div>
       </div>
       {!showCart ? (
-        <div className="product-grid">
-          {plantsArray.map((category, index) => (
-            <div key={index}>
-              <h1 className="category-title">{category.category}</h1>
+        <div>
+          {plantsArray.map((item, index) => (
+            <div className="product-grid">
+              <div className="plant_heading">
+                <h2>{item.category}</h2>
+              </div>
               <div className="product-list">
-                {category.plants.map((plant, plantIndex) => (
-                  <div className="product-card" key={plantIndex}>
+                {item.plants.map((item2, index2) => (
+                  <div className="product-card">
+                    <p className="product-title">{item2.name}</p>
                     <img
                       className="product-image"
-                      src={plant.image}
-                      alt={plant.name}
+                      src={item2.image}
+                      alt={item2.name}
                     />
-                    <div className="product-title">{plant.name}</div>
-                    {/*Similarly like the above plant.name show other details like description and cost*/}
+                    <p className="product-price">{item2.cost}</p>
+                    <p>{item2.description}</p>
                     <button
-                      className={`product-button ${
-                        addedToCart[plant.name] ? "added" : ""
-                      }`}
-                      onClick={() => handleAddToCart(plant)}
-                      disabled={addedToCart[plant.name]}
+                      className={
+                        cartItems.items.filter(
+                          (prod) => prod.name == item2.name
+                        ).length == 0
+                          ? "product-button"
+                          : "product-button added-to-cart"
+                      }
+                      onClick={() => handleAddToCart(item2)}
                     >
-                      {addedToCart[plant.name]
-                        ? "Added to Cart"
-                        : "Add to Cart"}
+                      {cartItems.items.filter((prod) => prod.name == item2.name)
+                        .length == 0
+                        ? "Add to Cart"
+                        : "Added to Cart"}{" "}
                     </button>
                   </div>
                 ))}
