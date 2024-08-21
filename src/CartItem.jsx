@@ -16,6 +16,18 @@ const CartItem = ({ onContinueShopping }) => {
       .toFixed(2);
   };
 
+  const handleUpdateQuantity = (productId, quantity) => {
+    dispatch(updateQuantity(productId, quantity));
+  };
+
+  const handleAddItem = (product) => {
+    dispatch(addItem(product));
+  };
+
+  const handleRemoveItem = (productId) => {
+    dispatch(removeItem(productId));
+  };
+
   const handleContinueShopping = (e) => {
     e.preventDefault();
     onContinueShopping();

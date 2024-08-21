@@ -8,6 +8,7 @@ function ProductList() {
   const [showCart, setShowCart] = useState(false);
   const [addedToCart, setAddedToCart] = useState({});
   const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.cartItems);
 
   const plantsArray = [
     {
@@ -288,6 +289,10 @@ function ProductList() {
     e.preventDefault();
     setShowCart(false);
   };
+  const initialState = {
+    cartItems: [],
+  };
+
   return (
     <div>
       <div className="navbar" style={styleObj}>
